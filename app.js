@@ -5,9 +5,13 @@ dotenv.config();
 const { Client } = require('pg');
 
 const app = express()
+
+// either set port from env provided by Heroku, or load 3000 for localhost
 const PORT = process.env.PORT || 3000;
 
 const client = new Client({
+
+  // either take database url provided by heroku, or from .env file for localhost
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
@@ -17,10 +21,10 @@ const client = new Client({
 client.connect();
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World from Eureka!')
 })
 
-app.get('/user', (req, res) => {
+app.get('/customers', (req, res) => {
   client.query('SELECT * FROM salesforce.eureka_customers__c;', (err, result) => {
     if (err) throw err;
     for (let row of result.rows) {
@@ -32,5 +36,5 @@ app.get('/user', (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`)
+  console.log(`App listening at http://localhost:${PORT}`)
 })
