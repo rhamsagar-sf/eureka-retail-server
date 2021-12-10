@@ -27,7 +27,6 @@ app.get('/user', (req, res) => {
       console.log(JSON.stringify(row));
     }
     res.send(result.rows);
-    client.end();
   });  
 });
 
