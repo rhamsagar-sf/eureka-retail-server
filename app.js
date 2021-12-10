@@ -5,7 +5,7 @@ dotenv.config();
 const { Client } = require('pg');
 
 const app = express()
-const port = 3000
+const PORT = process.env.PORT || 3000;
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
@@ -32,6 +32,6 @@ app.get('/user', (req, res) => {
 });
 
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
