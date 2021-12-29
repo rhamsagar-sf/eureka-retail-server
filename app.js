@@ -36,17 +36,34 @@ app.get("/customers", (req, res) => {
   );
 });
 
-/* post to update customers */
-
-app.post("/customers", (req, res) => {
+app.get("/customers/:userId", (req, res) => {
+  const userId = req.params.userId;
   client.query(
-    "UPDATE salesforce.eureka_customers__c SET phone__c = 98765432 WHERE id = 1;",
+    "SELECT * FROM salesforce.eureka_customers__c WHERE id = $1;",
+    [userId],
     (err, result) => {
       if (err) throw err;
       for (let row of result.rows) {
         console.log(JSON.stringify(row));
       }
       res.send(result.rows);
+    }
+  );
+});
+
+/* post to update customers */
+
+app.post("/customers", (req, res) => {
+  const { id, name } = req.headers;
+  client.query(
+    "UPDATE salesforce.eureka_customers__c SET name__c = $1 WHERE id = $2;",
+    [name, id],
+    (err, result) => {
+      if (err) throw err;
+      for (let row of result.rows) {
+        console.log(JSON.stringify(row));
+      }
+      res.send(`User modified with ID: ${id}`);
     }
   );
 });
