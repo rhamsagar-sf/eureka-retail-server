@@ -93,7 +93,42 @@ app.get("/customers/:userId", (req, res) => {
   }
 });
 
-/* post to update customers */
+/* post method to add customers */
+
+app.post("/customers", (req, res) => {
+  // get date
+  let ts = Date.now();
+
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+
+  // prints date & time in YYYY-MM-DD format
+  let date_today = year + "-" + month + "-" + date;
+
+  var credentials = basicAuth(req);
+  if (!credentials || !checkCredentials(credentials.name, credentials.pass)) {
+    res.statusCode = 401;
+    res.setHeader("WWW-Authenticate", 'Basic realm="example"');
+    res.end("Access denied");
+  } else {
+    const { name, email, address, phone } = req.body;
+    client.query(
+      "INSERT into salesforce.eureka_customers__c (name__c, email__c, address__c, phone__c, membership__c, totalspent__c, joindate__c, isdeleted) VALUES ($1, $2, $3, $4, 'ordinary', 0, $5, 'false');",
+      [name, email, address, phone, date_today],
+      (err, result) => {
+        if (err) throw err;
+        for (let row of result.rows) {
+          console.log(JSON.stringify(row));
+        }
+        res.send(`New User ${name} added!`);
+      }
+    );
+  }
+});
+
+/* post method to update customers */
 
 app.post("/customers", (req, res) => {
   var credentials = basicAuth(req);
