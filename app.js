@@ -124,7 +124,7 @@ app.post("/customers", (req, res) => {
 
 /* post method to update customers */
 
-app.post("/customers", (req, res) => {
+app.put("/customers", (req, res) => {
   var credentials = basicAuth(req);
   if (!credentials || !checkCredentials(credentials.name, credentials.pass)) {
     res.statusCode = 401;
@@ -164,7 +164,7 @@ app.delete("/customers/:userId", (req, res) => {
         for (let row of result.rows) {
           console.log(JSON.stringify(row));
         }
-        res.send(`User modified with ID: ${id}`);
+        res.send(`User deleted with ID: ${id}`);
       }
     );
   }
